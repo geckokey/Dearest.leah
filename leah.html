@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Love</title>
+
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background: #12070a;
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .active { display: flex; }
+
+  /* THEMES */
+  #homeScreen {
+    background: linear-gradient(270deg, #800000, #4169e1, #1a0b10);
+    background-size: 600% 600%;
+    animation: gradientBG 12s ease infinite;
+  }
+
+  #passwordScreen {
+    background: linear-gradient(270deg, #4169e1, #800000, #0f0a12);
+    background-size: 600% 600%;
+    animation: gradientBG 14s ease infinite;
+  }
+
+  #wrongScreen {
+    background: linear-gradient(270deg, #1a0b10, #800000, #4169e1);
+    background-size: 600% 600%;
+    animation: gradientBG 12s ease infinite;
+  }
+
+  #letterScreen {
+    background: linear-gradient(270deg, #2b0a0f, #4169e1, #800000);
+    background-size: 600% 600%;
+    animation: gradientBG 16s ease infinite;
+    overflow-y: auto;
+  }
+
+  @keyframes gradientBG {
+    0% {background-position:0% 50%}
+    50% {background-position:100% 50%}
+    100% {background-position:0% 50%}
+  }
+
+  h1 {
+    color: white;
+    text-shadow: 0 0 10px black;
+  }
+
+  input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    text-align: center;
+    outline: none;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background: #800000;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+  }
+
+  /* LETTER */
+  .letterCard {
+    background: rgba(0,0,0,0.65);
+    border: 3px solid #4169e1;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 650px;
+    color: #ffd6e5;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    text-align: left;
+  }
+
+  .gif {
+    width: 140px;
+    border-radius: 12px;
+    border: 3px solid #4169e1;
+    margin-bottom: 12px;
+  }
+
+  .revealBtn {
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+    animation: pulse 1.5s infinite;
+    text-align: center;
+  }
+
+  @keyframes pulse {
+    0% {color:#4169e1;}
+    50% {color:#800000;}
+    100% {color:#4169e1;}
+  }
+
+  /* WRONG SCREEN */
+  .catEmoji {
+    font-size: 40px;
+    margin-bottom: 10px;
+    animation: bounce 1s infinite;
+  }
+
+  @keyframes bounce {
+    0%,100% {transform: translateY(0);}
+    50% {transform: translateY(-10px);}
+  }
+
+  .hint {
+    margin-top: 10px;
+    color: white;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+
+</style>
+</head>
+
+<body>
+
+<!-- HOME -->
+<div id="homeScreen" class="screen active">
+  <h1>Welcome My Love</h1>
+  <button onclick="showScreen('passwordScreen')">Enter</button>
+</div>
+
+<!-- PASSWORD -->
+<div id="passwordScreen" class="screen">
+  <h1>Enter the Password</h1>
+  <input type="password" id="passwordInput" placeholder="Enter password...">
+  <button onclick="checkPassword()">Submit</button>
+  <p class="hint">Hint: what i feel about you</p>
+</div>
+
+<!-- WRONG -->
+<div id="wrongScreen" class="screen">
+  <div class="catEmoji" id="catEmoji">ฅ^•ﻌ•^ฅ</div>
+  <h1>Wrong answer my love</h1>
+  <button onclick="showScreen('passwordScreen')">Try again</button>
+</div>
+
+<!-- LETTER -->
+<div id="letterScreen" class="screen">
+
+  <div class="letterCard">
+
+    <img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+
+    <div class="revealBtn" onclick="startLetter()">❤ Click here ❤</div>
+
+    <div id="letterText"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* PASSWORD FIXED */
+function checkPassword(){
+  const val = document.getElementById("passwordInput").value.trim();
+
+  if(val === "iloveyouleah"){
+    showScreen('letterScreen');
+  } else {
+    showWrong();
+  }
+}
+
+/* WRONG ANIMATION */
+const cats = [
+  "ฅ^•ﻌ•^ฅ",
+  "(=^･ω･^=)",
+  "(=^‥^=)",
+  "(Ф∀Ф)",
+  "(=ＴェＴ=)"
+];
+
+let catIndex = 0;
+let catInterval;
+
+function showWrong(){
+  showScreen('wrongScreen');
+  clearInterval(catInterval);
+
+  catInterval = setInterval(() => {
+    document.getElementById("catEmoji").textContent =
+      cats[catIndex % cats.length];
+    catIndex++;
+  }, 900);
+}
+
+/* TYPEWRITER LETTER */
+const letter = `To my dearest love Leahhh ( ˶ˆᗜˆ˵ )♡
+
+Good morning my lovee and happy birthday babyyy 🎉💗
+Today is your special day, the day my world became brighter just because you exist
+
+Enjoyyy your birthday okayyy? (≧◡≦) ♡
+
+I loveee you so so much every single day
+today, tomorrow, yesterday, and every day after that
+
+From the moment I started loving you
+I knew my heart finally found its home
+
+You make everything feel softer and warmer
+like morning sunlight on a calm day ☀️
+
+I love waking up knowing you are mine
+I love going to sleep knowing you are still there for me
+and I love every moment in between where I get to miss you
+
+Leah my love, you are the kind of girl
+I would choose in every lifetime
+
+Your smile, your laugh, your cute messages
+your soft voice, your clinginess, your moods
+everything about you is precious to me ( ˘͈ ᵕ ˘͈♡)
+
+You make me proud
+You make me better
+You make my world feel full
+
+On your 18th birthday
+I hope you feel how deeply loved you are
+
+You are stepping into a new chapter
+and no matter how far life takes you
+my heart will always stay with yours
+
+Thank you for being my love
+my peace
+my happiness
+my Leahh babyyy 💖
+
+Happy birthday my lovee
+I am grateful for you every single day
+
+With all my love forever
+Jake ♡`;
+
+function startLetter(){
+  const box = document.getElementById("letterText");
+  box.textContent = "";
+
+  let i = 0;
+
+  function type(){
+    if(i < letter.length){
+      box.textContent += letter[i];
+      i++;
+      setTimeout(type, 18);
+    }
+  }
+
+  type();
+}
+
+</script>
+
+</body>
+</html>
